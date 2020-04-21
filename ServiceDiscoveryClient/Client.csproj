@@ -6,6 +6,7 @@
     <PackageId>Kwetterprise.ServiceDiscovery.Client</PackageId>
     <Authors>Tim van den Essen</Authors>
     <Company>Kwetterprise</Company>
+    <RepositoryUrl>https://github.com/Kwetterprise/ServiceDiscoveryClient</RepositoryUrl>
     <RootNamespace>Kwetterprise.ServiceDiscovery.Client</RootNamespace>
   </PropertyGroup>
 
