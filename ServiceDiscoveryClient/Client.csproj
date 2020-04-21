@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <nullable>enable</nullable>
     <PackageId>Kwetterprise.ServiceDiscovery.Client</PackageId>
-    <Version>1.2.2</Version>
     <Authors>Tim van den Essen</Authors>
     <Company>Kwetterprise</Company>
     <RootNamespace>Kwetterprise.ServiceDiscovery.Client</RootNamespace>
