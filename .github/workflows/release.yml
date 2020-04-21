@@ -1,9 +1,12 @@
 name: Release NuGet Package
 
-jobs:
-  Publish:
-    runs-on: ubuntu-latest
+on:
+  tags:
+    - v*
 
+jobs:
+  Build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -11,11 +14,9 @@ jobs:
       with:
         dotnet-version: 3.1.101
         source-url: https://nuget.pkg.github.com/Kwetterprise/index.json
-        env:
-            NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - name: Build solution and generate NuGet package
       run: dotnet pack -c Release -o out
-
     - name: Push generated package to GitHub registry
       run: dotnet nuget push ./out/*.nupkg --skip-duplicate --no-symbols false
