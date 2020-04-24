@@ -35,6 +35,9 @@ jobs:
       id: tag
       uses: dawidd6/action-get-tag@v1
       continue-on-error: false
+    - name: Semantic versioning tag
+      id: semantic_tag
+      run: echo ::set-output name=SEMANTIC_TAG::${steps.tag.outputs.tag#v}
     - name: Show Tag
       run: echo ${{steps.tag.outputs.tag}}
     - name: Setup .NET Core
@@ -42,7 +45,7 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build solution and generate NuGet package
-      run: dotnet pack -c Release -o out --include-symbols --include-source -p:PackageVersion=${{steps.tag.outputs.tag#v}}
+      run: dotnet pack -c Release -o out --include-symbols --include-source -p:PackageVersion=${{env.SEMANTIC_TAG}}
     - name: Push generated package to NuGet registry
       if: env.tag != ''
       run: dotnet nuget push ./out/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
