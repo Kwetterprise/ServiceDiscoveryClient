@@ -2,6 +2,7 @@ name: Build and test commit
 
 on:
   push:
+    branches:
 
 jobs:
   Build:
@@ -18,9 +19,12 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Extract tag name
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
   Deploy:
     needs: Build
-    if: contains(github.ref, 'v') # if the branch/tag contains a v.
+    if: contains(steps.get_version.outputs.VERSION, 'v') # if the branch/tag contains a v.
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -29,6 +33,6 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build solution and generate NuGet package
-      run: dotnet pack -c Release -o out
+      run: dotnet pack -c Release -o out --include-symbols --include-source -p:PackageVersion=${{steps.get_version.outputs.VERSION}}
     - name: Push generated package to NuGet registry
       run: dotnet nuget push ./out/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
