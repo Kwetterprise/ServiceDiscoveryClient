@@ -34,10 +34,10 @@ jobs:
     - name: Extract Tag Name
       run: echo "::set-env name=TAG::$(echo ${GITHUB_REF#refs/tags/})"
     - name: Set Release Mode (branch == master)
-      if: env.BRANCH == 'master'
+      if: env.BRANCH == 'master' && env.Tag != ''
       run: echo "::set-env name=CREATE_RELEASE::true"  
     - name: Set Dry Run Mode (branch != master)
-      if: env.BRANCH != 'master' && env.TAG != ''
+      if: env.BRANCH != 'master' || env.TAG == ''
       run: echo "::set-env name=CREATE_RELEASE::false"  
     - name: Create Release Name
       run: echo "::set-env name=RELEASE_NAME::${TAG}"
