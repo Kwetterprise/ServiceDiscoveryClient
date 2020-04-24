@@ -32,7 +32,7 @@ jobs:
       continue-on-error: false
     - name: Semantic versioning tag
       id: semantic_tag
-      run: echo ::set-output name=SEMANTIC_TAG::${steps.tag.outputs.tag#v}
+      run: echo ::set-output name=SEMANTIC_TAG::${steps.tag.outputs.tag:1}
     - name: Show Tag
       run: echo ${{steps.tag.outputs.tag}}
     - name: Setup .NET Core
