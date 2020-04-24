@@ -29,6 +29,8 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
     - name: 'Get tag'
       id: get_tag
       uses: "WyriHaximus/github-action-get-previous-tag@master"
@@ -37,8 +39,6 @@ jobs:
     - name: Show Tag
       id: display
       run: echo steps.get_tag.outputs.tag
-    - name: Checkout Code
-      uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
