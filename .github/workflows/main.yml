@@ -42,7 +42,7 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build solution and generate NuGet package
-      run: dotnet pack -c Release -o out --include-symbols --include-source -p:PackageVersion=${{steps.tag.outputs.tag}}
+      run: dotnet pack -c Release -o out --include-symbols --include-source -p:PackageVersion=${{steps.tag.outputs.tag#v}}
     - name: Push generated package to NuGet registry
       if: env.tag != ''
       run: dotnet nuget push ./out/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
