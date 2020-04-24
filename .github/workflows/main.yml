@@ -27,15 +27,28 @@ jobs:
           echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
   Deploy:
     needs: Build
-    if: steps.get_version.outputs.SOURCE_BRANCH == 'master' && steps.get_version.outputs.SOURCE_TAG != ''
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Extract Branch Name
+      run: echo "::set-env name=BRANCH::$(echo ${GITHUB_REF##*/})"
+    - name: Set Release Mode (branch == master)
+      if: env.BRANCH == 'master'
+      run: echo "::set-env name=CREATE_RELEASE::true"  
+    - name: Set Dry Run Mode (branch != master)
+      if: env.BRANCH != 'master'
+      run: echo "::set-env name=CREATE_RELEASE::false"  
+    - name: Create Release Name
+      run: echo "::set-env name=RELEASE_NAME::${BRANCH}-${GITHUB_RUN_NUMBER}"
+    - name: Build Info
+      run: "echo Running Build $GITHUB_RUN_NUMBER on Ref $GITHUB_REF / Branch $BRANCH, Release = $RELEASE_NAME / $CREATE_RELEASE"
+    - name: Checkout Code
+      if: env.CREATE_RELEASE == 'true'
+      uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
+      dotnet-version: 3.1.101
     - name: Build solution and generate NuGet package
-      run: dotnet pack -c Release -o out --include-symbols --include-source -p:PackageVersion=${{steps.get_version.outputs.VERSION}}
+      run: dotnet pack -c Release -o out --include-symbols --include-source -p:PackageVersion=${{SOURCE_TAG}}
     - name: Push generated package to NuGet registry
       run: dotnet nuget push ./out/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}}
