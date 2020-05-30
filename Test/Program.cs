@@ -2,6 +2,7 @@
 
 namespace Test
 {
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using Kwetterprise.ServiceDiscovery.Client.Models;
     using Kwetterprise.ServiceDiscovery.Client.Worker;
@@ -14,7 +15,9 @@ namespace Test
             var serviceConfiguration = new ServiceConfiguration("SomeService", "https://google.com");
             var apiGatewayConfiguration = new ServiceDiscoveryConfiguration("http://localhost:6221");
 
-            var httpClient = new ServiceDiscoveryHttpClient(serviceConfiguration, apiGatewayConfiguration);
+            var myLogger = new MyLogger<ServiceDiscoveryHttpClient>();
+
+            var httpClient = new ServiceDiscoveryHttpClient(myLogger, serviceConfiguration, apiGatewayConfiguration);
 
             await httpClient.Register();
 
@@ -26,11 +29,11 @@ namespace Test
         }
     }
 
-    class MyLogger<T> : ILogger<T>
+    internal class MyLogger<T> : ILogger<T>
     {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            Console.WriteLine($"{logLevel:D10} : {formatter(state, exception)}");
+            Console.WriteLine($"{logLevel:G10} : {formatter(state, exception)}");
         }
 
         public bool IsEnabled(LogLevel logLevel)
