@@ -33,7 +33,7 @@ namespace Test
     {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            Console.WriteLine($"{logLevel:G10} : {formatter(state, exception)}");
+            Console.WriteLine($"{logLevel} : {formatter(state, exception)}");
         }
 
         public bool IsEnabled(LogLevel logLevel)

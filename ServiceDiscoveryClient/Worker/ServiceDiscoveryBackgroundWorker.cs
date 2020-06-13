@@ -52,7 +52,14 @@
                 await this.registerTask;
             }
 
-            await this.apiGatewayHttpClient.Unregister();
+            try
+            {
+                await this.apiGatewayHttpClient.Unregister();
+            }
+            catch (Exception e)
+            {
+                this.logger.LogDebug(e, "Unable to unregister.");
+            }
         }
 
         public void Dispose()
